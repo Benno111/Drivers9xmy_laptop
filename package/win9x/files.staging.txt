@@ -1,0 +1,14 @@
+; Files staged into the Win9x package payload.
+;
+; In a real build, these would be produced by the DDK/toolchain.
+; The current repository keeps the source-side layout only.
+
+src/win9x/igd9x_win9x_driver.c
+src/win9x/igd9x_win9x_exports.c
+src/win9x/igd9x_win9x_entry.c
+src/win9x/igd9x_win9x_module.def
+src/win9x/miniport.c
+src/win9x/vxd.c
+src/win9x/igd9x_win9x_mmio.c
+src/win9x/igd9x_win9x_pci.c
+

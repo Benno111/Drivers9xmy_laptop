@@ -1,0 +1,90 @@
+; IGD9X Win9x display driver package.
+;
+; This is a legacy Windows 95/98-style display INF. It uses the classic
+; *vdd registry layout and copies the packaged driver binary into the system
+; directory.
+;
+; Target hardware:
+;   Intel HD Graphics 4000-class integrated graphics
+;   Ivy Bridge GT1 / GT2 PCI IDs:
+;     - PCI\VEN_8086&DEV_0162
+;     - PCI\VEN_8086&DEV_0166
+;   Common panel target used by this scaffold:
+;     - 1366x768 @ 60 Hz, 32 bpp
+
+[Version]
+Signature="$CHICAGO$"
+Class=DISPLAY
+Provider=%IGD9X%
+LayoutFile=layout.inf
+
+[DestinationDirs]
+DefaultDestDir=11
+IGD9X.CopyFiles=11
+
+[SourceDisksNames]
+1=%DiskName%,,,
+
+[SourceDisksFiles]
+igd9x.inf=1
+igd9x.drv=1
+igd9x.vxd=1
+
+[Manufacturer]
+%IGD9X%=IGD9X.Mfg
+
+[IGD9X.Mfg]
+%IGD9X.DeviceDesc%=IGD9X.Install, PCI\VEN_8086&DEV_0162
+%IGD9X.DeviceDesc%=IGD9X.Install, PCI\VEN_8086&DEV_0166
+
+[IGD9X.Install]
+CopyFiles=IGD9X.CopyFiles
+AddReg=IGD9X.AddReg
+DelReg=IGD9X.DelReg
+
+[IGD9X.CopyFiles]
+; The current scaffold driver is not a real Win9x display binary yet.
+; Win9x can still install the package by binding to the built-in VGA driver.
+
+[IGD9X.DelReg]
+HKR,,Ver
+HKR,,DevLoader
+HKR,DEFAULT
+HKR,MODES
+HKR,CURRENT
+HKR,INFO
+
+[IGD9X.AddReg]
+HKR,,Ver,,4.0
+HKR,,DevLoader,,*vdd
+HKR,,InfPath,,igd9x.inf
+HKR,DEFAULT,Mode,,"32,1366,768"
+HKR,DEFAULT,drv,,vga.drv
+HKR,DEFAULT,vdd,,"*vdd"
+HKR,DEFAULT,RefreshRate,,-1
+HKR,DEFAULT,DDC,,1
+HKR,"MODES\4\640,480",drv,,vga.drv
+HKR,"MODES\4\640,480",vdd,,*vdd
+HKR,"MODES\4\800,600",drv,,vga.drv
+HKR,"MODES\4\800,600",vdd,,*vdd
+HKR,"MODES\4\1024,768",drv,,vga.drv
+HKR,"MODES\4\1024,768",vdd,,*vdd
+HKR,"MODES\4\1366,768",drv,,vga.drv
+HKR,"MODES\4\1366,768",vdd,,*vdd
+HKR,"MODES\4\1920,1080",drv,,vga.drv
+HKR,"MODES\4\1920,1080",vdd,,*vdd
+HKR,"MODES\32\640,480",drv,,vga.drv
+HKR,"MODES\32\640,480",vdd,,*vdd
+HKR,"MODES\32\800,600",drv,,vga.drv
+HKR,"MODES\32\800,600",vdd,,*vdd
+HKR,"MODES\32\1024,768",drv,,vga.drv
+HKR,"MODES\32\1024,768",vdd,,*vdd
+HKR,"MODES\32\1366,768",drv,,vga.drv
+HKR,"MODES\32\1366,768",vdd,,*vdd
+HKR,"MODES\32\1920,1080",drv,,vga.drv
+HKR,"MODES\32\1920,1080",vdd,,*vdd
+
+[Strings]
+IGD9X="IGD9X"
+IGD9X.DeviceDesc="Intel HD Graphics 4000 Win9x Display Driver"
+DiskName="IGD9X Win9x Driver Disk"

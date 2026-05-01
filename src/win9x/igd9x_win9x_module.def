@@ -1,0 +1,15 @@
+; Win9x module definition for the IGD9X driver surface.
+; This is the export map that a real DDK build can consume.
+
+NAME IGD9X
+EXPORTS
+    DriverEntry
+    igd9x_win9x_driver_startup
+    igd9x_win9x_driver_shutdown
+    igd9x_win9x_driver_discover
+    igd9x_win9x_driver_attach
+    igd9x_win9x_driver_set_native_mode
+    igd9x_win9x_driver_set_mode_request
+    igd9x_win9x_driver_enumerate_modes
+    igd9x_win9x_driver_state
+

@@ -1,0 +1,16 @@
+; Package-level export map for the Win9x build.
+; This file mirrors the source-side module definition and can be used by
+; packaging scripts to verify the expected exported surface.
+
+NAME IGD9X
+EXPORTS
+    DriverEntry
+    igd9x_win9x_driver_startup
+    igd9x_win9x_driver_shutdown
+    igd9x_win9x_driver_discover
+    igd9x_win9x_driver_attach
+    igd9x_win9x_driver_set_native_mode
+    igd9x_win9x_driver_set_mode_request
+    igd9x_win9x_driver_enumerate_modes
+    igd9x_win9x_driver_state
+
