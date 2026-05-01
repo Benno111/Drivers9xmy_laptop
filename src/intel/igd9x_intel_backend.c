@@ -60,6 +60,72 @@ static u32 igd9x_intel_pipe_control(void)
     return IGD9X_INTEL_PIPECONF_ENABLE | IGD9X_INTEL_PIPECONF_GAMMA;
 }
 
+static igd9x_status_t igd9x_intel_wait_for_bit(const igd9x_mmio_ops_t *mmio,
+                                               u32 reg,
+                                               u32 mask,
+                                               u32 expect_set)
+{
+    u32 i;
+    u32 value;
+
+    if (mmio == 0 || mmio->read32 == 0) {
+        return IGD9X_STATUS_INVALID_ARGUMENT;
+    }
+
+    for (i = 0; i < 100000U; ++i) {
+        value = mmio->read32(mmio->context, reg);
+        if (expect_set) {
+            if ((value & mask) == mask) {
+                return IGD9X_STATUS_OK;
+            }
+        } else if ((value & mask) == 0) {
+            return IGD9X_STATUS_OK;
+        }
+    }
+
+    return IGD9X_STATUS_HW_FAILURE;
+}
+
+static igd9x_status_t igd9x_intel_enable_internal_panel(const igd9x_mmio_ops_t *mmio)
+{
+    igd9x_status_t status;
+
+    if (mmio == 0) {
+        return IGD9X_STATUS_INVALID_ARGUMENT;
+    }
+
+    status = igd9x_mmio_write32(mmio, IGD9X_INTEL_MMIO_PP_ON_DELAYS, 0x01900310UL);
+    if (status != IGD9X_STATUS_OK) {
+        return status;
+    }
+    status = igd9x_mmio_write32(mmio, IGD9X_INTEL_MMIO_PP_OFF_DELAYS, 0x00190031UL);
+    if (status != IGD9X_STATUS_OK) {
+        return status;
+    }
+    status = igd9x_mmio_write32(mmio, IGD9X_INTEL_MMIO_PP_DIVISOR, 0x00000001UL);
+    if (status != IGD9X_STATUS_OK) {
+        return status;
+    }
+
+    status = igd9x_mmio_write32(mmio, IGD9X_INTEL_MMIO_PP_CONTROL, IGD9X_INTEL_PANEL_POWER_ENABLE);
+    if (status != IGD9X_STATUS_OK) {
+        return status;
+    }
+
+    status = igd9x_intel_wait_for_bit(mmio, IGD9X_INTEL_MMIO_PP_STATUS,
+                                      IGD9X_INTEL_PANEL_POWER_ENABLE, 1);
+    if (status != IGD9X_STATUS_OK) {
+        return status;
+    }
+
+    status = igd9x_mmio_write32(mmio, IGD9X_INTEL_MMIO_LVDS_CTL, IGD9X_INTEL_LVDS_ENABLE);
+    if (status != IGD9X_STATUS_OK) {
+        return status;
+    }
+
+    return IGD9X_STATUS_OK;
+}
+
 static void igd9x_intel_plan_add(igd9x_intel_timing_plan_t *plan, u32 reg, u32 value)
 {
     if (plan->write_count < (u16)(sizeof(plan->writes) / sizeof(plan->writes[0]))) {
@@ -298,6 +364,14 @@ igd9x_status_t igd9x_intel_backend_set_mode(void *context, const igd9x_mode_t *m
         status = igd9x_intel_apply_plan(&state->last_plan, state->mmio);
         if (status != IGD9X_STATUS_OK) {
             return status;
+        }
+
+        if (state->kind == IGD9X_INTEL_KIND_IVB_GT1 ||
+            state->kind == IGD9X_INTEL_KIND_IVB_GT2) {
+            status = igd9x_intel_enable_internal_panel(state->mmio);
+            if (status != IGD9X_STATUS_OK) {
+                return status;
+            }
         }
     }
 

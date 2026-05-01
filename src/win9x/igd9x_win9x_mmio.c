@@ -1,4 +1,5 @@
 #include <string.h>
+#include "../../include/igd9x_intel.h"
 #include "../../include/igd9x_mmio.h"
 
 #define IGD9X_WIN9X_MMIO_BYTES 0x80000UL
@@ -33,6 +34,15 @@ static void igd9x_win9x_mmio_write32_impl(void *context, u32 offset, u32 value)
     }
 
     memcpy(&region->bytes[offset], &value, sizeof(value));
+
+    if (offset == IGD9X_INTEL_MMIO_PP_CONTROL) {
+        if ((value & IGD9X_INTEL_PANEL_POWER_ENABLE) != 0) {
+            value = IGD9X_INTEL_PANEL_POWER_ENABLE;
+        } else {
+            value = 0;
+        }
+        memcpy(&region->bytes[IGD9X_INTEL_MMIO_PP_STATUS], &value, sizeof(value));
+    }
 }
 
 static igd9x_win9x_mmio_region_t g_win9x_mmio_region;
@@ -59,4 +69,3 @@ void *igd9x_win9x_mmio_context(void)
 {
     return &g_win9x_mmio_region;
 }
-
