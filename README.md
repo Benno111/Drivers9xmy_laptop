@@ -29,30 +29,38 @@ This scaffold is intended to be the foundation for that work:
 
 ## Current mode set
 
-The default catalog covers the legacy modes most people expect from a Win9x
-desktop driver:
+The default catalog now covers a wider spread of classic Win9x desktop modes:
 
 - 640x480
 - 800x600
 - 1024x768
+- 1152x864
 - 1280x720
 - 1280x800
+- 1280x1024
 - 1366x768
 - 1400x1050
 - 1440x900
 - 1600x900
 - 1600x1200
+- 1680x1050
 - 1920x1080
+- 1920x1200
+- 2560x1440
 
-Each resolution is provided with 16-bit and 32-bit variants where that makes
-sense for the target VRAM and pixel-clock envelope.
+The table includes 8-bit, 16-bit, 24-bit, and 32-bit entries where that is
+reasonable for the chosen timing envelope.
 
 ## What is missing
 
-To turn this into a real Win9x Intel driver, we still need:
+The mode database and installer metadata now advertise the broader color-depth
+and resolution set, but to turn this into a real Win9x Intel driver we still
+need:
 
 - MMIO register definitions for the HD 4000 display engine
 - mode programming for pipes, planes, cursor, and PLLs
+- real 2D acceleration paths for blits, fills, and line drawing
+- real 3D acceleration integration
 - BIOS/VBE fallback path for boards where firmware exposes usable modes
 - Win9x DDK integration and INF packaging
 

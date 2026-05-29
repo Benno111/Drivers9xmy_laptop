@@ -1,0 +1,7 @@
+option quiet
+option map
+format windows vxd dynamic
+name igd9x.vxd
+file vxd.obj
+file igd9x_win9x_vxd_chkstub.obj
+export igd9x_win9x_vxd_default_hw_ops_

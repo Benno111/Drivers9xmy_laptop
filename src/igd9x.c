@@ -4,7 +4,20 @@
 
 #define IGD9X_PITCH_ALIGN 64U
 #define IGD9X_MAX_BPP 32U
-#define IGD9X_MIN_BPP 16U
+#define IGD9X_MIN_BPP 8U
+
+static int igd9x_is_supported_bpp(u16 bpp)
+{
+    switch (bpp) {
+    case 8:
+    case 16:
+    case 24:
+    case 32:
+        return 1;
+    default:
+        return 0;
+    }
+}
 
 u16 igd9x_calculate_pitch(u16 width, u16 bpp)
 {
@@ -34,6 +47,9 @@ static int igd9x_mode_supported(const igd9x_mode_t *mode)
         return 0;
     }
     if (mode->bpp < IGD9X_MIN_BPP || mode->bpp > IGD9X_MAX_BPP) {
+        return 0;
+    }
+    if (!igd9x_is_supported_bpp(mode->bpp)) {
         return 0;
     }
     if (mode->refresh_hz == 0) {

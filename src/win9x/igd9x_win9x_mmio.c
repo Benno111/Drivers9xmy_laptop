@@ -2,7 +2,7 @@
 #include "../../include/igd9x_intel.h"
 #include "../../include/igd9x_mmio.h"
 
-#define IGD9X_WIN9X_MMIO_BYTES 0x80000UL
+#define IGD9X_WIN9X_MMIO_BYTES 0x200000UL
 
 typedef struct igd9x_win9x_mmio_region {
     u8 bytes[IGD9X_WIN9X_MMIO_BYTES];

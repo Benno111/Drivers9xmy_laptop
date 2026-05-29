@@ -41,6 +41,7 @@ $packageFiles = @(
     "package\win9x\igd9x.inf",
     "package\win9x\exports.def",
     "package\win9x\driver.lnk",
+    "package\win9x\vxd.lnk",
     "package\win9x\build-driver.ps1",
     "package\win9x\README.md",
     "package\win9x\driverentry.c",

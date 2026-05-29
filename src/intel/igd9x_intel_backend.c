@@ -44,14 +44,29 @@ static u32 igd9x_intel_pack_src(const igd9x_mode_t *mode)
 static u32 igd9x_intel_plane_control(const igd9x_mode_t *mode, u8 pipe)
 {
     u32 value;
+    u32 format;
 
     value = IGD9X_INTEL_DSPCNTR_ENABLE | IGD9X_INTEL_DSPCNTR_GAMMA;
     value |= (pipe == 0) ? IGD9X_INTEL_DSPCNTR_SEL_PIPE_A : IGD9X_INTEL_DSPCNTR_SEL_PIPE_B;
-    if (mode->bpp == 16) {
-        value |= IGD9X_INTEL_DSPCNTR_FMT_16BPP;
-    } else {
-        value |= IGD9X_INTEL_DSPCNTR_FMT_32BPP;
+    format = 0;
+    switch (mode->bpp) {
+    case 8:
+    case 16:
+        format = IGD9X_INTEL_DSPCNTR_FMT_16BPP;
+        break;
+    case 24:
+    case 32:
+        format = IGD9X_INTEL_DSPCNTR_FMT_32BPP;
+        break;
+    default:
+        break;
     }
+
+    if (format == 0) {
+        return 0UL;
+    }
+
+    value |= format;
     return value;
 }
 
@@ -260,6 +275,9 @@ igd9x_status_t igd9x_intel_build_legacy_pipe_plan(const igd9x_mode_t *mode,
     }
 
     memset(plan, 0, sizeof(*plan));
+    if (igd9x_intel_plane_control(mode, pipe) == 0UL) {
+        return IGD9X_STATUS_UNSUPPORTED;
+    }
     if (pipe == 0) {
         igd9x_intel_plan_add(plan, IGD9X_INTEL_MMIO_DSPA_CTRL, igd9x_intel_plane_disable_value(0));
         igd9x_intel_plan_add(plan, IGD9X_INTEL_MMIO_PIPEA_CONF, igd9x_intel_pipe_disable_value());

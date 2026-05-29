@@ -12,7 +12,8 @@ be assembled for a real Windows 9x build.
 - `files.staging.txt` - files that should be copied into the release payload
 - `exports.def` - package-level export definition map
 - `driver.lnk` - Watcom linker response file for the Win9x driver DLL
-- `build-driver.ps1` - PowerShell script that links the driver binary
+- `vxd.lnk` - Watcom linker response file for the Win9x VxD binary
+- `build-driver.ps1` - PowerShell script that links the DLL and VxD binaries
 - `release.ps1` - PowerShell script that gathers the final release files
 - `driverentry.c` - Win9x loader-facing entry wrapper for the packaged build
 - `stage.ps1` - PowerShell staging script that builds the release payload layout
@@ -26,5 +27,4 @@ be assembled for a real Windows 9x build.
    Intel device.
 
 The `release.ps1` script builds on that flow by collecting the final driver
-binary, companion `igd9x.vxd` placeholder, INF, and packaging notes into
-`release/win9x/`.
+binary, linked `igd9x.vxd`, INF, and packaging notes into `release/win9x/`.

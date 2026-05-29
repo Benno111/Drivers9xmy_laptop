@@ -42,7 +42,7 @@ int main(void)
     device.prog_if = 0x00U;
     device.revision_id = 0x09U;
     device.bar0 = 0xF0000000UL;
-    device.bar0_size = 0x00080000UL;
+    device.bar0_size = 0x00200000UL;
 
     status = igd9x_win9x_pci_bind_mock_device(&device);
     if (status != IGD9X_STATUS_OK) {
@@ -129,6 +129,51 @@ int main(void)
                                                 IGD9X_INTEL_MMIO_PIPEA_CONF));
     } else {
         printf("mode request failed: %u\n", (unsigned int)status);
+    }
+
+    status = igd9x_win9x_driver_set_mode_request(1920, 1200, 24, 60);
+    if (status == IGD9X_STATUS_OK) {
+        if (igd9x_win9x_driver_state() != 0) {
+            mode = igd9x_win9x_driver_state()->driver.current_mode;
+        } else {
+            mode = 0;
+        }
+        if (mode != 0) {
+            printf("High-color mode now: %s\n",
+                   igd9x_driver_describe_mode(mode, name, (u16)sizeof(name)));
+        }
+    } else {
+        printf("high-color mode request failed: %u\n", (unsigned int)status);
+    }
+
+    status = igd9x_win9x_driver_set_mode_request(1600, 1200, 8, 60);
+    if (status == IGD9X_STATUS_OK) {
+        if (igd9x_win9x_driver_state() != 0) {
+            mode = igd9x_win9x_driver_state()->driver.current_mode;
+        } else {
+            mode = 0;
+        }
+        if (mode != 0) {
+            printf("8-bit variant now: %s\n",
+                   igd9x_driver_describe_mode(mode, name, (u16)sizeof(name)));
+        }
+    } else {
+        printf("8-bit variant request failed: %u\n", (unsigned int)status);
+    }
+
+    status = igd9x_win9x_driver_set_mode_request(2560, 1440, 32, 60);
+    if (status == IGD9X_STATUS_OK) {
+        if (igd9x_win9x_driver_state() != 0) {
+            mode = igd9x_win9x_driver_state()->driver.current_mode;
+        } else {
+            mode = 0;
+        }
+        if (mode != 0) {
+            printf("2560x1440 mode now: %s\n",
+                   igd9x_driver_describe_mode(mode, name, (u16)sizeof(name)));
+        }
+    } else {
+        printf("2560x1440 request failed: %u\n", (unsigned int)status);
     }
 
     igd9x_win9x_driver_shutdown();
